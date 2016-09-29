@@ -6,7 +6,7 @@ output:
     reference_docx: newTemplate.docx
     
 bibliography: "references.bib"
-csl: "nature.csl"
+csl: "american-medical-association.csl"
 ---
 
 ```{r, echo=FALSE, include=FALSE}
@@ -17,7 +17,7 @@ source(file.path("..","R","sumariseCaseSeriesVariants.R"))
 source(file.path("..","R","Figures.R"))
 ```
 
-## Short running title: Using variant frequencies to empower genome interpretation
+**Short running title: Allele frequency and genome interpretation**
 
 ```{r authors, results='asis'}
 read.delim("../data-raw/authors.txt") %>%
@@ -25,7 +25,11 @@ read.delim("../data-raw/authors.txt") %>%
 ```
 
 Corespondance should be addressed to:
-Dr James Ware, National Heart and Lung Institute, Imperial College London, London, Tel: Fax: Email: j.ware@imperial.ac.uk
+Dr James Ware, Cardiovascular Genetics and Genomics, NHLI, RBH Campus, Imperial College London, London, SW3 6NP; Tel: +44 20 7352 8121; Fax: +44 20 7351 8146; Email: j.ware@imperial.ac.uk
+
+## CONFLICT OF INTEREST NOTIFICATION
+
+The authors have no conflicts of interest to declare.
 
 ## ABSTRACT
 
@@ -37,7 +41,7 @@ Dr James Ware, National Heart and Lung Institute, Imperial College London, Londo
 
 **Conclusion**: We outline a statistically robust framework for assessing whether a variant is 'too common' to be causative for a Mendelian disorder of interest. We present precomputed allele frequency cutoffs for all variants in the ExAC dataset.
 
-Key words:
+Key words: Variant interpretation, Clinical Genomics, Allele frequency, Cardiomyopathy, Inherited Cardiovascular conditions, ExAC
 
 ## INTRODUCTION
 
@@ -98,7 +102,7 @@ After curating variants above our calculated HCM threshold, the false discovery 
 
 We used a cohort of 322 patients recruited to the Royal Brompton Hospital cardiac Biomedical Research Unit with diagnosis of HCM confirmed by cardiac MRI. These samples were sequenced using the IlluminaTruSight Cardio Sequencing Kit `r citep("10.1007/s12265-016-9673-5")` on theIlluminaMiSeq and NextSeq platforms. This study was subject to ethical approval (REC: 09/H0504/104+5) and informed consent was obtained for all subjects. The number of rare variants in _MYBPC3_, _MYH7_ and the six other sarcomeric genes associated with HCM (_TNNT2_, _TNNI3_, _MYL2_, _MYL3_, _TPM1_ and _ACTC1_) were calculated for this HCM cohort, and for reference population samples from ExAC. Case/control variant frequencies were calculated for all protein altering variants (frameshift, nonsense, splice donor/acceptor, missense and in-frame insertions/deletions), with frequencies and case/control odds ratios calculated separately for non-overlapping ExAC allele frequency bins with the following breakpoints: 1x10^-5^, 5x10^-5^, 1x10^-4^, 5x10^-4^ and 1x10^-3^. Odds Ratios were calculated as OR = (cases with variant / cases without variant) / (ExAC samples with variant / ExAC samples without variant) along with 95% confidence intervals. In the absence of sample-level genotype data for ExAC, the number of samples with a variant was approximated by the total number of variant alleles - i.e. assuming that each rare variant was found in a distinct sample.
 
-## Data availability
+### Data availability
 
 All data required to reproduce these analyses is available at <https://github.com/ImperialCardioGenetics/frequencyFilter>. The manuscript was compiled in R, and source code for the analysis, figures and manuscript, are available at the same location. Curated variant interpretations are deposited in ClinVar *Accession & DOI to be added*. ExAC annotations are available at <exac.broadinstitute.org>. Our allele frequency calculator app is located at <https://jamesware.shinyapps.io/alleleFrequencyApp/>, and the source code available at <http://github.com/jamesware/alleleFrequencyApp>.
 
