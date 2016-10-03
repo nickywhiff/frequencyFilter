@@ -33,6 +33,22 @@ read.delim("../data-raw/SupplementaryTable1.txt") %>% kable
 
 ## Suplementary Methods
 
+### The statistical model
+
+The maximum tolerated allele count (AC) was computed as the AC occurring at the upper bound of the one-tailed 95% confidence interval (95%CI AC) for the established maximum credible allele frequency, given the observed allele number (AN). Since the population is drawn without replacement, this would strictly be a hypergeometric distribution, but this can be modeled as binomial as the sample is much smaller than the population from which it is drawn. For ease of computation, we approximate this with a Poisson distribution. In R, this is implemented as `max_ac = qpois(quantile_limit,an*af)`, where `max_ac` is the 95%CI AC, `quantile_limit` is 0.95 (for a one-sided 95%CI), `an` is the observed allele number, and `af` is the maximum credible population allele frequency. 
+
+### Defining maximum credible AF for recessive diseases
+
+The prevalence of a recessive condition can be related to the AF of causative variants by:  
+*Prevalence =* $\sum$ *(AF of causative alleles in each contributing gene)^2^ x penetrance*  
+approximating to:   
+*Prevalence = (combined frequency of causative alleles in gene)^2^ x (number of similar genes) x penetrance*  
+and expanding to:  
+*Prevalence = (max individual AF x 1/maximum allelic contribution)^2^ x 1/maximum genetic contribution x penetrance*
+
+where *maximum genetic contribution* represents the proportion of all cases that are attributable to the gene under evaluation, and *maximum allelic contribution* represents the proportion of cases attributable to that gene that are attributable to an individual variant. The maximum frequency of a recessive disease causing variant in the population was therefore defined as:  
+*max credible AF* = $\sqrt(prevalence) \times$ *maximum allelic contribution* $\times \sqrt(maximum genetic contribution) \times 1/\sqrt(penetrance)$
+
 ### Curation of a high frequency PCD variant
 
 _NME8_ NM\_016616.4:c.271-27C>T which is reported as Pathogenic in ClinVar is found in 2306/120984 ExAC individuals. This variant was initially reported as pathogenic on the basis of two compound heterozygous cases when specifically searching for NME8 variants in a set of patients, and was found in 2/196 control chromosomes `r citep("10.1073/pnas.0611405104")`. We further note that _NME8_ has not otherwise been associated with PCD and shows no evidence of missense nor loss-of-function constraint and that this splice variant affects a non-canonical transcript. During our curation exercise we found that this variant meets none of the ACMG criteria for assertions of pathogenicity, and therefore we reclassified it as a VUS. 
