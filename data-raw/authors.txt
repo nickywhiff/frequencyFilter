@@ -9,16 +9,16 @@ Anne O'Donnell-Luria, MD, PhD	"Analytic & Translational Genetics Unit, Massachus
 Anne O'Donnell-Luria, MD, PhD	"Program in Medical and Population Genetics, Broad Institute of MIT & Harvard, Cambridge MA"			
 Konrad Karczewski, PhD	"Analytic & Translational Genetics Unit, Massachusetts General Hospital, Boston MA"			
 Konrad Karczewski, PhD	"Program in Medical and Population Genetics, Broad Institute of MIT & Harvard, Cambridge MA"			
-Alexander Y Ing, MS, CGC	"Laboratory for Molecular Medicine, Partners HealthCare Personalized Medicine, Cambridge, MA"			
+Alexander Y Ing, MS, CGC	"Laboratory for Molecular Medicine, Partners HealthCare Personalized Medicine, Cambridge MA"			
 Alexander Y Ing, MS, CGC	"Department of Pathology, Massachusetts General Hospital and Harvard Medical School, Boston MA"			
 Paul JR Barton, PhD	"National Heart & Lung Institute, Imperial College London"			
 Paul JR Barton, PhD	"NIHR Royal Brompton Cardiovascular Biomedical Research Unit, Royal Brompton & Harefield Hospitals & Imperial College London"			
 Birgit Funke, PhD, FACMG	"Laboratory for Molecular Medicine, Partners HealthCare Personalized Medicine, Cambridge MA"			
 Birgit Funke, PhD, FACMG	"Department of Pathology, Massachusetts General Hospital and Harvard Medical School, Boston MA"			
-Stuart A Cook, PhD, MRCPath	"National Heart & Lung Institute, Imperial College London"		T	
-Stuart A Cook, PhD, MRCPath	"NIHR Royal Brompton Cardiovascular Biomedical Research Unit, Royal Brompton & Harefield Hospitals & Imperial College London"			
-Stuart A Cook, PhD, MRCPath	"National Heart Centre Singapore, Singapore"			
-Stuart A Cook, PhD, MRCPath	"Duke-National University of Singapore, Singapore"			
+Stuart A Cook, PhD, MRCP	"National Heart & Lung Institute, Imperial College London"		T	
+Stuart A Cook, PhD, MRCP	"NIHR Royal Brompton Cardiovascular Biomedical Research Unit, Royal Brompton & Harefield Hospitals & Imperial College London"			
+Stuart A Cook, PhD, MRCP	"National Heart Centre Singapore, Singapore"			
+Stuart A Cook, PhD, MRCP	"Duke-National University of Singapore, Singapore"			
 Daniel MacArthur, PhD	"Analytic & Translational Genetics Unit, Massachusetts General Hospital, Boston MA"		T	
 Daniel MacArthur, PhD	"Program in Medical and Population Genetics, Broad Institute of MIT & Harvard, Cambridge MA"			
 Daniel MacArthur, PhD	"Department of Medicine, Harvard Medical School, Boston MA"			
