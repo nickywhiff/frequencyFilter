@@ -35,7 +35,7 @@ read.delim("../data-raw/SupplementaryTable1.txt") %>% kable
 
 ### The statistical model
 
-The maximum tolerated allele count (AC) was computed as the AC occurring at the upper bound of the one-tailed 95% confidence interval (95%CI AC) for the established maximum credible allele frequency, given the observed allele number (AN). Since the population is drawn without replacement, this would strictly be a hypergeometric distribution, but this can be modeled as binomial as the sample is much smaller than the population from which it is drawn. For ease of computation, we approximate this with a Poisson distribution. In R, this is implemented as `max_ac = qpois(quantile_limit,an*af)`, where `max_ac` is the 95%CI AC, `quantile_limit` is 0.95 (for a one-sided 95%CI), `an` is the observed allele number, and `af` is the maximum credible population allele frequency. 
+The maximum tolerated allele count (AC) was computed as the AC occurring at the upper bound of the one-tailed 95% confidence interval (95%CI AC) for the established maximum credible allele frequency, given the observed allele number (AN). Since the population is drawn without replacement, this would strictly be a hypergeometric distribution, but this can be modeled as binomial as the sample is much smaller than the population from which it is drawn. For ease of computation, we approximate this with a Poisson distribution. In R, this is implemented as `max_ac = qpois(quantile_limit,an*af)`, where `max_ac` is the 95%CI AC, `quantile_limit` is 0.95 (for a one-sided 95%CI), `an` is the observed allele number, and `af` is the maximum credible population allele frequency.
 
 ### Defining maximum credible AF for recessive diseases
 
@@ -52,10 +52,6 @@ where *maximum genetic contribution* represents the proportion of all cases that
 ### Curation of a high frequency PCD variant
 
 _NME8_ NM\_016616.4:c.271-27C>T which is reported as Pathogenic in ClinVar is found in 2306/120984 ExAC individuals. This variant was initially reported as pathogenic on the basis of two compound heterozygous cases when specifically searching for NME8 variants in a set of patients, and was found in 2/196 control chromosomes `r citep("10.1073/pnas.0611405104")`. We further note that _NME8_ has not otherwise been associated with PCD and shows no evidence of missense nor loss-of-function constraint and that this splice variant affects a non-canonical transcript. During our curation exercise we found that this variant meets none of the ACMG criteria for assertions of pathogenicity, and therefore we reclassified it as a VUS. 
-
-### False discovery rate calculation
-
-After curating variants above our calculated HCM threshold, the false discovery rate was 0/477 (0.000; 95%CI 0.000-0.008) and 1/559 (0.002; 95%CI 0.000-0.010) for the published HCM cohort and ClinVar data respectively.
 
 ### Dealing with penetrance
 
