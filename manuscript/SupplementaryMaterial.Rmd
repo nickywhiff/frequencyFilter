@@ -23,14 +23,6 @@ sourceDir <- function(path, trace = TRUE, ...) {
 source("../R/setup.R")
 ```
 
-## Supplementary Table S1
-
-Variants previously reported as causative of HCM either in ClinVar, or in a clinical series of 6179 HCM cases, but that were observed in ExAC above the maximum tolerated allele count for HCM (AC>9 globally) were manually curated according to the ACMG guidelines for interpretation and classification on sequence variants. *These variants were previously categorised as Likely Pathogenic in the LMM and Oxford HCM cohorts.
-
-```{r}
-read.delim("../data-raw/SupplementaryTable1.txt") %>% kable
-```
-
 ## Suplementary Methods
 
 ### The statistical model
@@ -46,8 +38,8 @@ approximating to:
 and expanding to:  
 *Prevalence = (max individual AF x 1/maximum allelic contribution)^2^ x 1/maximum genetic contribution x penetrance*
 
-where *maximum genetic contribution* represents the proportion of all cases that are attributable to the gene under evaluation, and *maximum allelic contribution* represents the proportion of cases attributable to that gene that are attributable to an individual variant. The maximum frequency of a recessive disease causing variant in the population was therefore defined as:  
-*max credible AF* = $\sqrt(prevalence) \times$ *maximum allelic contribution* $\times \sqrt(maximum genetic contribution) \times 1/\sqrt(penetrance)$
+where *maximum genetic contribution* represents the proportion of all cases that are attributable to the gene under evaluation, and *maximum allelic contribution* represents the proportion of cases attributable to that gene that are attributable to an individual variant. This can be rearranged to give the maximum frequency of a recessive disease causing variant in the population as:
+*max credible AF* = $\sqrt($*prevalence*$) \times$ *maximum allelic contribution* $\times \sqrt($*maximum genetic contribution*$) \times 1/\sqrt($*penetrance*$)$
 
 ### Curation of a high frequency PCD variant
 
@@ -55,7 +47,7 @@ _NME8_ NM\_016616.4:c.271-27C>T which is reported as Pathogenic in ClinVar is fo
 
 ### Dealing with penetrance
 
-It is often difficult to obtain accurate penetrance information for reported variants, and it is also difficult to know what degree of penetrance to expect or assume in newly discovered pathogenic variants. In this work we uniformly apply a value of 50% penetrance (i.e. assuming variant penetrance is no lower than 50%) equivalent to that reported for our HCM example variant, and the lowest we found reported for any of our examples or reported accross our studied disorders. We recognise several other approaches that can be used to deal with the issues of penetrance, these include: setting a penetrance level equivalent to the minimum that is 'clinically actionable' for a disorder; lowering the penetrance if reduced penetrance is expected in a family; or using a two tiered approach, initially searching for a high-moderate penetrance variant but allowing for a lower-penetrance variant in a second pass. We believe that the ease of re-calculating our "maximum credible population allele frequency" lends itself to any of these approaches. We provide an online calculator to facilitate the exploration of these parameters (<https://jamesware.shinyapps.io/alleleFrequencyApp/>). If there are large case and control populations for a disease and the diease prevalence is known, we can use these to estimate penetrance `r citep("10.1126/scitranslmed.aad5169")`.
+It is often difficult to obtain accurate penetrance information for reported variants, and it is also difficult to know what degree of penetrance to expect or assume in newly discovered pathogenic variants. In this work we uniformly apply a value of 50% penetrance for inherited cardiac conditions (i.e. assuming variant penetrance is no lower than 50%) equivalent to that reported for our HCM example variant, and the lowest we found reported for any of our examples or reported accross our studied disorders. We recognise several other approaches that can be used to deal with the issues of penetrance, these include: setting a penetrance level equivalent to the minimum that is 'clinically actionable' for a disorder; lowering the penetrance if reduced penetrance is expected in a family; or using a two tiered approach, initially searching for a high-moderate penetrance variant but allowing for a lower-penetrance variant in a second pass. We believe that the ease of re-calculating our "maximum credible population allele frequency" lends itself to any of these approaches. We provide an online calculator to facilitate the exploration of these parameters (<https://jamesware.shinyapps.io/alleleFrequencyApp/>). If there are large case and control populations for a disease and the diease prevalence is known, we can use these to estimate penetrance `r citep("10.1126/scitranslmed.aad5169")`.
 
 ### Treatment of singletons and other populations
  
@@ -77,6 +69,14 @@ In the example, the highest allele frequency that gives a 95%CI AC of 2 when AN=
 In order to pre-compute `af_filter` values for all of ExAC (verson 0.3.1), we apply this procedure to the AC and AN values for each of the five major continental populations in ExAC, and take the highest result from any population. Usually, this is from the population with the highest nominal allele frequency. However, because the tightness of a 95% confidence interval in the Poisson distribution depends upon sample size, the stringency of the filter depends upon the allele number (AN). The stringency of the filter therefore varies appropriately according the the size of the sub-population in which the variant is observed, and sequencing coverage at that site, and `af_filter` is occasionally derived from a population other than the one with the highest nominal allele frequency. 
 
 For this analysis, we used adjusted AC and AN, meaning variant calls with GQ≥20 and DP≥10.
+
+## Supplementary Table S1
+
+Variants previously reported as causative of HCM either in ClinVar, or in a clinical series of 6179 HCM cases, but that were observed in ExAC above the maximum tolerated allele count for HCM (AC>9 globally) were manually curated according to the ACMG guidelines for interpretation and classification on sequence variants. *These variants were previously categorised as Likely Pathogenic in the LMM and Oxford HCM cohorts.
+
+```{r}
+read.delim("../data-raw/SupplementaryTable1.txt") %>% kable
+```
 
 ##Supplemental references
 
