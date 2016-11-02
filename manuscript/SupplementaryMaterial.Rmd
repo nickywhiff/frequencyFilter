@@ -70,6 +70,16 @@ In order to pre-compute `af_filter` values for all of ExAC (verson 0.3.1), we ap
 
 For this analysis, we used adjusted AC and AN, meaning variant calls with GQ≥20 and DP≥10.
 
+### Analysis tools
+
+R was used for all analyses, as well as to compile the figures, manuscript and supplementary material, making use of the following packages:
+knitr/rmarkdown (https://github.com/yihui/knitr)
+knitcitations (http://www.carlboettiger.info/2012/05/30/knitcitations.html)
+knitauthors (https://github.com/jamesware/knitauthors)
+dplyr (https://github.com/hadley/dplyr)
+ggplot2 (http://ggplot2.org/)
+packrat (https://rstudio.github.io/packrat/)
+
 ## Supplementary Table S1
 
 Variants previously reported as causative of HCM either in ClinVar, or in a clinical series of 6179 HCM cases, but that were observed in ExAC above the maximum tolerated allele count for HCM (AC>9 globally) were manually curated according to the ACMG guidelines for interpretation and classification on sequence variants. *These variants were previously categorised as Likely Pathogenic in the LMM and Oxford HCM cohorts.
