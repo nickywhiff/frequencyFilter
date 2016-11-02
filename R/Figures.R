@@ -2,7 +2,7 @@
 #source("../R/setup.R")
 my.CI<-0.95
 
-### Figure 2
+### Figure 1
 
 variants<-read.table("../data-raw/LMM_OXF_path_likelyPath_VUS_variants_allExACpopulations_withLowestClass.txt", header=TRUE, sep="\t")
 maxHCMPenTerm<-9
@@ -39,7 +39,7 @@ zoomplot <- ggplot(subset(variants, (Disease=="HCM" & !(Gene %in% c('GLA','DMD',
         legend.position="none",  axis.line.x = element_line(color="grey"), axis.line.y = element_line(color="grey"), panel.background = element_blank(), 
         axis.ticks = element_line(color="grey"))
 
-png("../figures/Figure2.png",width=1200,height=1000,res=150)
+png("../figures/Figure1.png",width=1200,height=1000,res=150)
 subvp<-viewport(width=.5,height=.5,x=.745,y=.745)
 
 zoomplot
@@ -47,7 +47,7 @@ print(zoomplot)
 print(fullplot,vp=subvp)
 dev.off()
 
-### Figure 3
+### Figure 2
 
 # Details for Exome plot (figure 3a)
 stats = read.table('../data/filtering_stats.tsv',sep='\t',quote='',header=TRUE)
@@ -121,7 +121,7 @@ genes = c(names(gene_names)[c(1,2,3)])
 ef_data$acol = gene_colors[ef_data$Gene]
 
 # Plot multipanel plot
-png('../figures/Figure3.png',width=3800,height=1500,res=150)
+png('../figures/Figure2.png',width=3800,height=1500,res=150)
 m<-rbind(c(1,2))
 layout(m)
 
