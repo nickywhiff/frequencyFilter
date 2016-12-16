@@ -27,19 +27,39 @@ source("../R/setup.R")
 
 ### The statistical model
 
+For dominant disorders we define the maximum credible population AF (for a pathogenic allele) as:
+
+*maximum credible population AF = prevalence* $\times$ *maximum allelic contribution* $\times$ *1/penetrance* 
+
+where _maximum allelic contribution_ is the maximum proportion of cases potentially attributable to a single allele, a measure of heterogeneity. It is important to note that although we estimate the _maximum allelic contribution_ as a single value, this can be broken down into seperate factors corresponding to the maximum contribution of any one gene (_maximum genetic contribution_) and the _maximum allelic contribution_ within that gene. These two seperate factors are used in the derivation of the recessive model described below.
+
 The maximum tolerated allele count (AC) was computed as the AC occurring at the upper bound of the one-tailed 95% confidence interval (95%CI AC) for the established maximum credible allele frequency, given the observed allele number (AN). Since the population is drawn without replacement, this would strictly be a hypergeometric distribution, but this can be modeled as binomial as the sample is much smaller than the population from which it is drawn. For ease of computation, we approximate this with a Poisson distribution. In R, this is implemented as `max_ac = qpois(quantile_limit,an*af)`, where `max_ac` is the 95%CI AC, `quantile_limit` is 0.95 (for a one-sided 95%CI), `an` is the observed allele number, and `af` is the maximum credible population allele frequency.
 
 ### Defining maximum credible AF for recessive diseases
 
-The prevalence of a recessive condition can be related to the AF of causative variants by:  
-*Prevalence =* $\sum$ *(AF of causative alleles in each contributing gene)^2^ x penetrance*  
-approximating to:   
-*Prevalence = (combined frequency of causative alleles in gene)^2^ x (number of similar genes) x penetrance*  
-and expanding to:  
-*Prevalence = (max individual AF x 1/maximum allelic contribution)^2^ x 1/maximum genetic contribution x penetrance*
+For a biallelic condition caused by only a single gene, the prevalence can be determined from the combined frequency of all possible pairs of causative alleles in that gene:
 
-where *maximum genetic contribution* represents the proportion of all cases that are attributable to the gene under evaluation, and *maximum allelic contribution* represents the proportion of cases attributable to that gene that are attributable to an individual variant. This can be rearranged to give the maximum frequency of a recessive disease causing variant in the population as:
-*max credible AF* = $\sqrt($*prevalence*$) \times$ *maximum allelic contribution* $\times \sqrt($*maximum genetic contribution*$) \times 1/\sqrt($*penetrance*$)$
+$prevalence = \sum_{i}^{j} (AF_{i} \times AF_{j} \times penetrance_{i,j})$
+
+where $AF_{i}$ and $AF_{j}$ represent the frequencies of the two alleles, and $i$ and $j$ may be the same allele.
+
+For a condition caused by multiple genes, the above equation must then be summed across $n$ contributing genes:
+
+$prevalence = \sum_{1}^{n} \sum_{i}^{j} (AF_{i} \times AF_{j} \times penetrance_{i,j})$
+
+Since the penetrance can not be separately estimated for each combination of alleles (though is typically high for recessive conditions), we simplify by estimating penetrance as constant for the condition, reducing the equation to:
+
+$prevalence = penetrance \times \sum_{1}^{n}\sum_{i}^{j} (AF_{i} \times AF_{j})$
+
+which is equivalent to:
+
+$prevalence = penetrance \times \sum_{1}^{n} \sum_{i}^{} (AF_{i}^2)$
+
+we can rearrange this to give an upper bound for the maximum credible AF of an individual causative variant:
+
+$max$ $credible$ $AF$ = $\sqrt(prevalence) \times$ $maximum$ $allelic$ $contribution$ $\times \sqrt(maximum$ $genetic$ $contribution$) $\times 1/\sqrt(penetrance)$
+
+where rather than simply dividing by n genes to get an average, we take the upper bound of the proportion attributable to any single gene (the *maximum genetic contribution*). Similarly we take the maximum proportion of cases attributable to that gene that are attributable to any individual variant (the *maximum allelic contribution*).
 
 ### Curation of a high frequency PCD variant
 
@@ -47,13 +67,13 @@ _NME8_ NM\_016616.4:c.271-27C>T which is reported as Pathogenic in ClinVar is fo
 
 ### Dealing with penetrance
 
-It is often difficult to obtain accurate penetrance information for reported variants, and it is also difficult to know what degree of penetrance to expect or assume in newly discovered pathogenic variants. In this work we uniformly apply a value of 50% penetrance for inherited cardiac conditions (i.e. assuming variant penetrance is no lower than 50%) equivalent to that reported for our HCM example variant, and the lowest we found reported for any of our examples or reported accross our studied disorders. We recognise several other approaches that can be used to deal with the issues of penetrance, these include: setting a penetrance level equivalent to the minimum that is 'clinically actionable' for a disorder; lowering the penetrance if reduced penetrance is expected in a family; or using a two tiered approach, initially searching for a high-moderate penetrance variant but allowing for a lower-penetrance variant in a second pass. We believe that the ease of re-calculating our "maximum credible population allele frequency" lends itself to any of these approaches. We provide an online calculator to facilitate the exploration of these parameters (<https://jamesware.shinyapps.io/alleleFrequencyApp/>). If there are large case and control populations for a disease and the diease prevalence is known, we can use these to estimate penetrance `r citep("10.1126/scitranslmed.aad5169")`.
+It is often difficult to obtain accurate penetrance information for reported variants, and it is also difficult to know what degree of penetrance to expect or assume in newly discovered pathogenic variants. In this work we uniformly apply a value of 50% penetrance for inherited cardiac conditions (i.e. assuming variant penetrance is no lower than 50%) equivalent to that reported for our HCM example variant, and the lowest we found reported for any of our examples or reported accross our studied disorders. We recognise several other approaches that can be used to deal with the issues of penetrance, these include: setting a penetrance level equivalent to the minimum that is 'clinically actionable' for a disorder; lowering the penetrance if reduced penetrance is expected in a family; or using a two tiered approach, initially searching for a high-moderate penetrance variant but allowing for a lower-penetrance variant in a second pass. We believe that the ease of re-calculating our "maximum credible population allele frequency" lends itself to any of these approaches. We provide an online calculator to facilitate the exploration of these parameters (<http://cardiodb.org/alleleFrequencyApp>). If there are large case and control populations for a disease and the diease prevalence is known, we can use these to estimate penetrance `r citep("10.1126/scitranslmed.aad5169")`.
 
 ### Treatment of singletons and other populations
  
 It is worth considering whether a single observation in a reference sample should ever be treated as incompatible with disease. Using the approach outlined above, it can be inferred that an ExAC AC=1 would be considered incompatible with a true population allele frequency <2.9x10^-6^ (with 95% confidence). For a penetrant disease with a prevalence of 1:1,000,000, the probability of observing a specific causative allele in ExAC is <0.01, even if the disease is genetically homogeneous with just one causative variant. In practice however, we feel that there are few, if any, diseases that are extremely rare yet have sufficiently well-characterized genetic architecture to discard singleton variants from a reference sample. Therefore, for singletons (variants observed exactly once in ExAC), we set the filtering allele frequency to zero.
 
-We also note that occasionally a variant is seen in individuals falling under the Finnish or "Other" population categories in ExAC, and is a singleton or absent in all five continental populations. For these variants, the filtering allele frequency is set to zero. Because the Finnish are a bottlenecked population, disease-causing alleles may reach frequencies that would be impossible in large outbred populations. Similarly, because we have not assigned ancestry for the "Other" individuals, it is difficult to assess the population frequency of variants seen only in this set of individuals. Users are left to judge whether variants that  would not be filtered on the basis of frequency in the five continental populations, but that are recurrent in Finnish or "Other" populations, should be removed from consideration according to the specific circumstances.
+We also note that occasionally a variant is seen in individuals falling under the Finnish or "Other" population categories in ExAC, and is a singleton or absent in all five continental populations. For these variants, the filtering allele frequency is set to zero. Because the Finnish are a bottlenecked population, disease-causing alleles may reach frequencies that would be impossible in large outbred populations. Similarly, because we have not assigned ancestry for the "Other" individuals, it is difficult to assess the population frequency of variants seen only in this set of individuals. Users are left to judge whether variants that  would not be filtered on the basis of frequency in the five continental populations, but that are sufficiently frequent in Finnish or "Other" populations, should be removed from consideration according to the specific circumstances.
 
 ### Description of the filtering allele frequency
 
@@ -73,16 +93,11 @@ For this analysis, we used adjusted AC and AN, meaning variant calls with GQ≥2
 ### Analysis tools
 
 R was used for all analyses, as well as to compile the figures, manuscript and supplementary material, making use of the following packages:
-knitr/rmarkdown (https://github.com/yihui/knitr)
-knitcitations (http://www.carlboettiger.info/2012/05/30/knitcitations.html)
-knitauthors (https://github.com/jamesware/knitauthors)
-dplyr (https://github.com/hadley/dplyr)
-ggplot2 (http://ggplot2.org/)
-packrat (https://rstudio.github.io/packrat/)
+knitr/rmarkdown (https://github.com/yihui/knitr), knitcitations (http://www.carlboettiger.info/2012/05/30/knitcitations.html), knitauthors (https://github.com/jamesware/knitauthors), dplyr (https://github.com/hadley/dplyr), ggplot2 (http://ggplot2.org/), packrat (https://rstudio.github.io/packrat/).
 
 ## Supplementary Table S1
 
-Variants previously reported as causative of HCM either in ClinVar, or in a clinical series of 6179 HCM cases, but that were observed in ExAC above the maximum tolerated allele count for HCM (AC>9 globally) were manually curated according to the ACMG guidelines for interpretation and classification on sequence variants. *These variants were previously categorised as Likely Pathogenic in the LMM and Oxford HCM cohorts.
+Variants previously reported as causative of HCM either in ClinVar, or in a clinical series of 6179 HCM cases, but that were observed in ExAC above the maximum tolerated allele count for HCM (AC>9 globally) were manually curated according to the ACMG guidelines for interpretation and classification on sequence variants. For 5/43 variants, ClinVar contained the only identifiable disease-associated variant record, while 38/43 had additional information in the literature. Curated variant interpretations are deposited in ClinVar under the submission name "HCM\_ExAC\_frequency\_review\_2016". *These variants were previously categorised as Likely Pathogenic in the LMM and Oxford HCM cohorts.
 
 ```{r}
 read.delim("../data-raw/SupplementaryTable1.txt") %>% kable
