@@ -39,7 +39,7 @@ zoomplot <- ggplot(subset(variants, (Disease=="HCM" & !(Gene %in% c('GLA','DMD',
         legend.position="none",  axis.line.x = element_line(color="grey"), axis.line.y = element_line(color="grey"), panel.background = element_blank(), 
         axis.ticks = element_line(color="grey"))
 
-png("../figures/Figure1.png",width=1200,height=1000,res=150)
+png("../figures/Figure1.png",width=2400,height=2000,res=300)
 subvp<-viewport(width=.5,height=.5,x=.745,y=.745)
 
 zoomplot
@@ -71,40 +71,40 @@ stats$acol = pop_colors[stats$ancestry]
 # Compute Odds Ratios and Confidence Intervals from ExAC and Internal HCM data
 #install.packages("tidyr")
 options(stringsAsFactors = FALSE)
-exac_data<-read.table("../data-raw/ExACVariants_0.001_sarcomeric.txt", header=TRUE, sep="\t") %>% 
-  tbl_df %>%
-  transmute(Gene,CodingVar,AC=ExACAlleleCount,exacAF=ExACFreq,group="control")
+#exac_data<-read.table("../data-raw/ExACVariants_0.001_sarcomeric.txt", header=TRUE, sep="\t") %>% 
+#  tbl_df %>%
+#  transmute(Gene,CodingVar,AC=ExACAlleleCount,exacAF=ExACFreq,group="control")
 hcm_data<-read.table("../data-raw/HCM_BRU_Variants_and_freqs.txt", header=TRUE, sep="\t") %>% 
   tbl_df %>%
   transmute(Gene,CodingVar,AC=CaseCount,exacAF=ExACFreq,group="case")
+hvol_data<-read.table("../data-raw/HVOL_BRU_Variants_and_freqs.txt", header=TRUE, sep="\t") %>% 
+  tbl_df %>%
+  transmute(Gene,CodingVar,AC=CaseCount,exacAF=ExACFreq,group="control")
 
-data <- rbind(exac_data,hcm_data)
-data$bin <- cut(data$exacAF,breaks=c(1,0.001,0.0005,0.0001,0.00005,0.00001,-1),labels=c("0.00001","0.00005","0.0001","0.0005","0.001","1"))
+#data <- rbind(exac_data,hcm_data)
+data <- rbind(hvol_data,hcm_data)
+data$bin <- cut(data$exacAF,breaks=c(0.001,0.0005,0.0001,0.00004,-1),labels=c("0.00004","0.0001","0.0005","0.001"))
 
 assignGeneGroup <- function(x){
-  if(x=="MYH7"){return(x)} else
-    if(x=="MYBPC3"){return(x)} else
-    {return("OTHER")}
+    {return("ALL")}
 }
 applyGeneGroup <- function(x){
   sapply(x,assignGeneGroup)
 }
 
-assignPopSize <- function(x,y){
+assignPopSize <- function(y){
   if(y=="case"){return(322)} else
-    if(x=="MYH7"){return(60469)} else
-      if(x=="MYBPC3"){return(45793.5)} else
-      {return(57855)}
+      {return(852)}
 }
-applyPopSize<-function(x,y){
-  mapply(assignPopSize,x,y)
+applyPopSize<-function(y){
+  mapply(assignPopSize,y)
 }
 
 ef_data<-data %>%
   mutate(Gene=applyGeneGroup(Gene)) %>%
   group_by(Gene,bin,group) %>%
   summarise(totAC=sum(AC)) %>%
-  mutate(size=applyPopSize(Gene,group)) %>%
+  mutate(size=applyPopSize(group)) %>%
   transmute(group,odds=totAC/(size-totAC),seprecurse=((1/totAC)+(1/(size-totAC)))) %>%
   unite(oddsSEpre,odds,seprecurse,sep="_") %>%
   spread(key=group,value=oddsSEpre,fill="0_0") %>%
@@ -114,14 +114,14 @@ ef_data<-data %>%
   transmute(OR,LowerCI=(exp(log(OR)-(1.96*SE))),UpperCI=(exp(log(OR)+(1.96*SE)))) %>%
   mutate(ExACfreq=as.numeric(bin)) 
 
-gene_list <- c('MYBPC3','MYH7','OTHER')
-gene_names = c('MYBPC3' = 'MYBPC3','MYH7' = 'MYH7','OTHER' = 'Other Sarcomeric')
-gene_colors = c('MYH7' = color_afr,'MYBPC3' = color_nfe,'OTHER' = color_sas)
-genes = c(names(gene_names)[c(1,2,3)])
-ef_data$acol = gene_colors[ef_data$Gene]
+#gene_list <- c('MYBPC3','MYH7','OTHER')
+#gene_names = c('MYBPC3' = 'MYBPC3','MYH7' = 'MYH7','OTHER' = 'Other Sarcomeric')
+#gene_colors = c('MYH7' = color_afr,'MYBPC3' = color_nfe,'OTHER' = color_sas)
+#genes = c(names(gene_names)[c(1,2,3)])
+#ef_data$acol = gene_colors[ef_data$Gene]
 
 # Plot multipanel plot
-png('../figures/Figure2.png',width=3800,height=1500,res=150)
+png('../figures/Figure2.png',width=7600,height=3000,res=300)
 m<-rbind(c(1,2))
 layout(m)
 
@@ -142,20 +142,16 @@ legend('topright',pop_names[ancestries],col=pop_colors[ancestries],text.font=2,t
 mtext("(a)", side=3, adj=-0.115, line=0.5, cex=2.8)
 
 par(mar=c(5,6,3,2))
-plot(NA, NA, xlim=c(5,1), ylim=c(0,62), ann=FALSE, axes=FALSE, yaxs='i', log='x')
+plot(NA, NA, xlim=c(4,1), ylim=c(0,15.5), ann=FALSE, axes=FALSE, yaxs='i', log='x')
 #abline(h=(0:6)*10, lwd=.5)
 abline(h=0)
-abline(v=5.33)
-for (gene in genes) {
-  rows = ef_data$Gene==gene
-  points(ef_data$ExACfreq[rows], ef_data$OR[rows], type='b', lwd=5, pch=19, col=ef_data$acol[rows])
-  arrows(ef_data$ExACfreq[rows], ef_data$LowerCI[rows], ef_data$ExACfreq[rows], ef_data$UpperCI[rows], length=0.02, angle=90, code=3, col=ef_data$acol[rows])
-}
-axis(side=1, at=c(5,4,3,2,1), labels=c("0.1","0.05","0.01","0.005","0.001"), lwd=0, lwd.ticks=1, cex.axis=2)
-axis(side=2, at=(0:6)*10, labels=(0:6)*10, lwd=0, lwd.ticks=0, las=2, cex.axis=2)
+abline(v=4.222)
+points(ef_data$ExACfreq, ef_data$OR, type='b', lwd=5, pch=19, col=color_afr)
+arrows(ef_data$ExACfreq, ef_data$LowerCI, ef_data$ExACfreq, ef_data$UpperCI, length=0.02, angle=90, code=3, col=color_afr)
+axis(side=1, at=c(4,3,2,1), labels=c("0.1","0.05","0.01","0.004"), lwd=0, lwd.ticks=1, cex.axis=2)
+axis(side=2, at=(0:4)*5, labels=(0:4)*5, lwd=0, lwd.ticks=0, las=2, cex.axis=2)
 mtext(side=1, line=3.5, text='Maximum ExAC frequency (%)', cex=2.5)
 mtext(side=2, line=4.0, text='Odds ratio', cex=2.5)
-legend('topleft',gene_names[genes],col=gene_colors[genes],text.font=2,text.col=gene_colors[genes],lwd=5, cex=2)
 mtext("(b)", side=3, adj=-0.13, line=0.5, cex=2.8)
 
 dev.off()
