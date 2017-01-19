@@ -37,29 +37,43 @@ The maximum tolerated allele count (AC) was computed as the AC occurring at the 
 
 ### Defining maximum credible AF for recessive diseases
 
-For a biallelic condition caused by only a single gene, the prevalence can be determined from the combined frequency of all possible pairs of causative alleles in that gene:
+For a biallelic condition caused by only a single gene, the prevalence can be determined from the combined frequency of all possible pairs of alleles in that gene:
 
-$prevalence = \sum_{i}^{j} (AF_{i} \times AF_{j} \times penetrance_{i,j})$
+$prevalence = \sum_{i,j} (AF_i \times AF_j \times penetrance_{i,j})$
 
-where $AF_{i}$ and $AF_{j}$ represent the frequencies of the two alleles, and $i$ and $j$ may be the same allele.
+where $penetrance_{i,j}$ is the penetrance of two alleles $i$ and $j$ with frequencies $AF_{i}$ and $AF_{j}$ and $i$ and $j$ may be the same allele. This is generalisable in that all variants may be included in the summation, as the $penetrance_{i,j}$ will be 0 for benign variants, and those variants will not contribute to disease.
 
 For a condition caused by multiple genes, the above equation must then be summed across $n$ contributing genes:
 
-$prevalence = \sum_{1}^{n} \sum_{i}^{j} (AF_{i} \times AF_{j} \times penetrance_{i,j})$
+$prevalence = \sum_{1}^{n} \sum_{i,j} (AF_{i} \times AF_{j} \times penetrance_{i,j})$
 
-Since the penetrance can not be separately estimated for each combination of alleles (though is typically high for recessive conditions), we simplify by estimating penetrance as constant for the condition, reducing the equation to:
+where $penetrance_{i,j}$ is the penetrance of $i$ and $j$.
 
-$prevalence = penetrance \times \sum_{1}^{n}\sum_{i}^{j} (AF_{i} \times AF_{j})$
+Since the penetrance cannot be separately estimated for each combination of alleles (though is typically high for recessive conditions), we simplify by estimating penetrance as constant for the condition, and calculating only for pathogenic alleles, reducing the equation to:
 
-which is equivalent to:
+$prevalence = penetrance \times \sum_{1}^{n}\sum_{i,j} (AF_{i} \times AF_{j})$
 
-$prevalence = penetrance \times \sum_{1}^{n} \sum_{i}^{} (AF_{i}^2)$
+where $penetrance$ is the penetrance for any pair of pathogenic alleles and $i$ and $j$ are both pathogenic alleles.
 
-we can rearrange this to give an upper bound for the maximum credible AF of an individual causative variant:
+Since we are now treating penetrance as constant for each gene this simplifies further: for a given gene containing $m$ pathogenic alleles, the frequency of individuals who are homozygous or compound heterozygous is given by the square of the combined allele frequencies of all contributing alleles.
+
+$\sum_{i,j} (AF_{i} \times AF_{j}) = (\sum_{i=1}^{m}AF_{i})^2$
+
+If we know the AF of a single variant $i$, and the contribution that variant makes to disease, then the combined allele frequencies of all contributing alleles ($\sum_{i=1}^{m}AF_{i}$) could in turn be represented as $\frac {AF_{i}}{allelicContribution_{i}}$ where $allelicContribution_{i}$ is the proportion of disease that is attributable to variant $i$.
+
+Substituting this into our equation for prevalence yields:
+
+$prevalence = penetrance \times \sum_{1}^{n}(\frac {AF_{i}}{allelicContribution_{i}})^2$
+
+For a specific variant in a specific gene, with known allelic and genetic contribution (i.e. the proportion of cases attributable to the gene that contains variant $i$), prevalence can be expressed as:
+
+$prevalence = penetrance \times (\frac {1}{geneticContribution_{i}}) \times (\frac {AF_{i}}{allelicContribution_{i}})^2$
+
+Finally, we can rearrange this to give an upper bound for the maximum credible AF of an individual causative variant:
 
 $max$ $credible$ $AF$ = $\sqrt(prevalence) \times$ $maximum$ $allelic$ $contribution$ $\times \sqrt(maximum$ $genetic$ $contribution$) $\times 1/\sqrt(penetrance)$
 
-where rather than simply dividing by n genes to get an average, we take the upper bound of the proportion attributable to any single gene (the *maximum genetic contribution*). Similarly we take the maximum proportion of cases attributable to that gene that are attributable to any individual variant (the *maximum allelic contribution*).
+where $maximum$ $genetic$ $contribution$ is the maximum proportion of cases attributatble to any one gene and $maximum$ $allelic$ $contribution$ is the maximum proportion of cases attributable to any one variant within that gene.
 
 ### Curation of a high frequency PCD variant
 
